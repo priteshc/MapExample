@@ -19,16 +19,28 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".Second">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyB4P8m8qWius0ESt4Trkaub7Y3W-VjJ6Ws"/>
 
+        <activity android:name=".Main">
+            <intent-filter>
+
+                <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER" />
+
             </intent-filter>
+
         </activity>
 
-
         <activity android:name=".MainActivity"/>
+
+        <activity android:name=".Details"/>
+
+        <activity android:name=".DetailPackage"/>
+
+        <activity android:name=".GoogleMapInfoWindowActivity"/>
+
     </application>
 
 </manifest>

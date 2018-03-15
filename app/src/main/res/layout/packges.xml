@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        app:ms_dropdown_max_height="250dp"
+        app:ms_dropdown_height="250dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:ms_text_color="@color/black_semi_transparent"
+        app:ms_arrow_tint="@color/colorPrimaryDark"
+        app:ms_background_color="#cfd8dc"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="3dp"
+        android:id="@+id/operator"
+        android:typeface="serif"
+        android:hint="Select Biller"
+        android:layout_marginTop="100dp"
+        />
+
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="100dp"
+        android:background="@color/colorPrimary"
+        android:text="Proccess"
+        android:textColor="#ffffff"
+        android:id="@+id/pro"
+        />
+
+</LinearLayout>

@@ -36,4 +36,9 @@
 
     </style>
 
+    <style name="menu_labels_style">
+        <item name="android:background">@drawable/fabstyle</item>
+        <item name="android:textColor">#ffffff</item>
+    </style>
+
 </resources>
