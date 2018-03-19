@@ -41,4 +41,6 @@
         <item name="android:textColor">#ffffff</item>
     </style>
 
+    <style name="Toolbar.Light" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
 </resources>

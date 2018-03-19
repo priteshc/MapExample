@@ -25,7 +25,6 @@ import java.util.Locale;
 
 public class Main extends AppCompatActivity {
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +32,7 @@ public class Main extends AppCompatActivity {
         setContentView(R.layout.loadscreen);
 
         final SampleAdapter sampleAdapter = new SampleAdapter();
-        sampleAdapter.addData(50);
+        sampleAdapter.addData(10);
 
         final FloatingActionsMenu menuMultipleActions = (FloatingActionsMenu) findViewById(R.id.multiple_actions);
 
@@ -103,7 +102,7 @@ public class Main extends AppCompatActivity {
                     protected void onPostExecute(Void aVoid) {
                         super.onPostExecute(aVoid);
 
-                        sampleAdapter.addData(50);
+                        sampleAdapter.addData(10);
 
                         scrollLoadRecyclerView.setLoading(false);
                     }

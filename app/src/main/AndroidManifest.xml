@@ -23,7 +23,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB4P8m8qWius0ESt4Trkaub7Y3W-VjJ6Ws"/>
 
-        <activity android:name=".Main">
+        <activity android:name=".SwipeRefresh">
             <intent-filter>
 
                 <action android:name="android.intent.action.MAIN"/>
