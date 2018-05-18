@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import java.util.Locale;
 
@@ -129,6 +130,14 @@ public class Main extends AppCompatActivity {
         public void onBindDataViewHolder(SampleViewHolder holder, int position) {
             holder.textView.setText(String.format(Locale.getDefault(), "Item: %d", position + 1));
 
+
+            PushDownAnim.setPushDownAnimTo(holder.itemView,holder.delete)
+                    .setScale(PushDownAnim.MODE_STATIC_DP, 2)
+                    .setDurationPush(PushDownAnim.DEFAULT_PUSH_DURATION)
+                    .setDurationRelease(PushDownAnim.DEFAULT_RELEASE_DURATION)
+                    .setInterpolatorPush(PushDownAnim.DEFAULT_INTERPOLATOR)
+                    .setInterpolatorRelease(PushDownAnim.DEFAULT_INTERPOLATOR);
+
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -138,6 +147,7 @@ public class Main extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
+
 
             holder.delete.setOnClickListener(new View.OnClickListener() {
                 @Override

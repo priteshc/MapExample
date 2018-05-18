@@ -5,8 +5,10 @@ package com.example.atishay.myexample;
  */
 
 import android.app.Dialog;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,8 +29,21 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.android.gms.maps.model.PolygonOptions;
+import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class GoogleMapInfoWindowActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -36,12 +51,20 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
 
     private ArrayList<LatLng> latlngs = new ArrayList<>();
 
+
+
     private  Dialog dialog,dialog1;
 
     private Button piller,excavator;
 
     private String id;
     private String rod;
+    private PolygonOptions polygonOptions;
+    private LatLng latLng1,latLng2,latLng3,latLng4,latLng5;
+    private Polygon polygon;
+
+    private GoogleMap googleMap;
+
 
 
     @Override
@@ -61,6 +84,14 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
             latlngs.add(new LatLng(18.9872015, 72.82904559999997));
             latlngs.add(new LatLng(19.218331, 72.978090));
 
+            latLng1 = new LatLng(19.009913, 72.842686);
+
+           latLng2 = new LatLng(19.021324, 72.842418);
+           latLng3 = new LatLng(19.015847, 72.827997);
+           latLng4 = new LatLng(19.026875, 72.855335);
+           latLng5 = new LatLng( 19.021324, 72.842418);
+
+
 
         piller.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -76,12 +107,17 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
             }
         });
 
+        polygonOptions = new PolygonOptions();
+
+
     }
 
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
+
         mMap = googleMap;
 
         mMap.getUiSettings().setZoomControlsEnabled(true);
@@ -108,14 +144,12 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
 */
         for (LatLng point : latlngs) {
 
-
             mMap.addMarker(new MarkerOptions().position(point));
 
-         /*   mMap.addMarker(new MarkerOptions().position(snowqualmie1)
-                    .title("Dadar"));
+         /*   mMap.addMarker(new MarkerOptions().position(snowqualmie1).title("Dadar"));
 */
-
         }
+
         final InfoWindowData info = new InfoWindowData();
         info.setImage("snowqualmie");
         info.setHotel("Hotel : excellent hotels available");
@@ -139,10 +173,24 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
               //  marker.setTag(info);
 
                 id = marker.getId();
+
                 return false;
 
             }
         });
+
+/*
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+                polygonOptions.add(latLng);
+
+            }
+        });*/
+
+
+
 
       /* Marker m = mMap.addMarker(markerOptions);
         m.setTag(info);*/
@@ -160,6 +208,12 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
        {
            mMap.moveCamera(CameraUpdateFactory.newLatLng(latlngs.get(0)));
        }
+
+
+        mMap.addPolyline((new PolylineOptions()).add(latlngs.get(0), latLng5,latlngs.get(1)).width(5).color(Color.BLUE).geodesic(true));
+
+        mMap.addPolyline((new PolylineOptions()).add(latlngs.get(0), latLng5).width(5).color(Color.GREEN).geodesic(true));
+
 
 
    /*     mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
@@ -194,12 +248,183 @@ public class GoogleMapInfoWindowActivity extends AppCompatActivity implements On
 
           Log.v("TestLog", "OnCameraChange: " +  mMap.getCameraPosition());
 
+          Toast.makeText(GoogleMapInfoWindowActivity.this,String.valueOf(mMap.getCameraPosition()),Toast.LENGTH_SHORT).show();
+
       }
   });
+
+  //polygonOptions.add(latLng1);
+
+        polygonOptions.add(latLng1);
+        polygonOptions.add(latLng2);
+        polygonOptions.add(latLng3);
+        polygonOptions.add(latLng4);
+
+        countPolygonPoints();
+
+
+    }
+
+    public void countPolygonPoints()
+    {
+        if(polygonOptions.getPoints().size()>3){
+
+            polygonOptions.strokeColor(Color.GREEN);
+            polygonOptions.strokeWidth((float) 0.30);
+            polygonOptions.fillColor(Color.BLUE);
+            polygon = mMap.addPolygon(polygonOptions);
+
+        }
+
+       // String url = getDirectionsUrl(latlngs.get(0), latlngs.get(1));
+
+    }
+
+
+    private String getDirectionsUrl(LatLng origin, LatLng dest) {
+
+        // Origin of route
+        String str_origin = "origin=" + origin.latitude + "," + origin.longitude;
+
+        // Destination of route
+        String str_dest = "destination=" + dest.latitude + "," + dest.longitude;
+
+        // Sensor enabled
+        String sensor = "sensor=false";
+        String mode = "mode=driving";
+
+        // Building the parameters to the web service
+        String parameters = str_origin + "&" + str_dest + "&" + sensor + "&" + mode;
+
+        // Output format
+        String output = "json";
+
+        // Building the url to the web service
+        String url = "https://maps.googleapis.com/maps/api/directions/" + output + "?" + parameters;
+
+        return url;
+    }
+
+
+    private class DownloadTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            String data = "";
+            try {
+                data = downloadUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            ParserTask parserTask = new ParserTask();
+
+            parserTask.execute(result);
+
+        }
+
+
     }
 
 
 
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap>>> {
+
+        // Parsing the data in non-ui thread
+        @Override
+        protected List<List<HashMap>> doInBackground(String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                DirectionsJSONParser parser = new DirectionsJSONParser();
+             //   routes = parser.parse(jObject);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap>> result) {
+            ArrayList points = null;
+            PolylineOptions lineOptions = null;
+            MarkerOptions markerOptions = new MarkerOptions();
+
+            for (int i = 0; i < result.size(); i++) {
+                points = new ArrayList();
+                lineOptions = new PolylineOptions();
+
+                List<HashMap> path = result.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap point = path.get(j);
+
+                 /*   double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);*/
+
+                  //  points.add(position);
+                }
+
+                lineOptions.addAll(points);
+                lineOptions.width(12);
+                lineOptions.color(Color.RED);
+                lineOptions.geodesic(true);
+
+            }
+
+// Drawing polyline in the Google Map for the i-th route
+            mMap.addPolyline(lineOptions);
+        }
+    }
+
+
+    private String downloadUrl(String strUrl) throws IOException {
+        String data = "";
+        InputStream iStream = null;
+        HttpURLConnection urlConnection = null;
+        try {
+            URL url = new URL(strUrl);
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+
+            urlConnection.connect();
+
+            iStream = urlConnection.getInputStream();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(iStream));
+
+            StringBuffer sb = new StringBuffer();
+
+            String line = "";
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+            }
+
+            data = sb.toString();
+
+            br.close();
+
+        } catch (Exception e) {
+            Log.d("Exception", e.toString());
+        } finally {
+            iStream.close();
+            urlConnection.disconnect();
+        }
+        return data;
+    }
 
     private void OpenPopUpm0() {
 
