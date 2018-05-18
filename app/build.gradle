@@ -45,6 +45,7 @@ dependencies {
     compile 'com.github.allan1st:JellyRefreshLayout:2.0'
     compile 'com.github.thekhaeng:pushdown-anim-click:1.1.0'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
+    compile 'com.github.kayvannj:PermissionUtils:1.0.9'
 
 
     }

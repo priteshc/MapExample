@@ -1,15 +1,20 @@
 package com.example.atishay.myexample;
 
+import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.github.kayvannj.permission_utils.Func2;
+import com.github.kayvannj.permission_utils.PermissionUtil;
 import com.thekhaeng.pushdownanim.PushDownAnim;
 
 import org.json.JSONArray;
@@ -24,6 +29,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static android.Manifest.permission.WRITE_CONTACTS;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+
 /**
  * Created by Atishay on 14-03-2018.
  */
@@ -36,6 +44,12 @@ public class Details extends AppCompatActivity {
    String apiUrl = "http://atishay.co.in/android/AndroidAPI/MoneyTransferValidate?Username=phoenix&Password=atishay2000&Type=6&Reg=9769363548$&otp=&benef=ramakant$ANDB0000001$27870100010669$1583710703$04052018105300$&pay=100$IMPS";
 
     String apiUrl1 = "http://mobileappdatabase.in/demo/smartnews/app_dashboard/jsonUrl/single-article.php?article-id=71";
+
+    private PermissionUtil.PermissionRequestObject mBothPermissionRequest;
+    private static final int REQUEST_CODE_BOTH = 3;
+
+    public static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+    public static final String WRITE_CONTACTS = Manifest.permission.WRITE_CONTACTS;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,19 +74,53 @@ public class Details extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-              //  Toast.makeText(Details.this,"Click",Toast.LENGTH_SHORT).show();
 
-                new GetMethodDemo().execute();
+                int result = ContextCompat.checkSelfPermission(Details.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
-                progressDialog.show();
+                Toast.makeText(Details.this,String.valueOf(result),Toast.LENGTH_SHORT).show();
+
+
+                mBothPermissionRequest = PermissionUtil.with(Details.this).request(WRITE_EXTERNAL_STORAGE, WRITE_CONTACTS).onResult(new Func2() {
+                    @Override protected void call(int requestCode, String[] permissions, int[] grantResults) {
+                        for (int i = 0; i < permissions.length; i++) {
+                            if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                                doOnPermissionGranted(permissions[i]);
+                            } else {
+                                doOnPermissionDenied(permissions[i]);
+                            }
+                        }
+                    }
+                }).ask(REQUEST_CODE_BOTH);
+
+
+                //  Toast.makeText(Details.this,"Click",Toast.LENGTH_SHORT).show();
+
+              /*  new GetMethodDemo().execute();
+
+                progressDialog.show();*/
             }
         });
 
     }
 
+    private void doOnPermissionDenied(String permission) {
+       // updateStatus(permission + " Permission Denied or is on \"Do Not SHow Again\"");
+    }
+
+    private void doOnPermissionGranted(String permission) {
+     //   updateStatus(permission + " Permission Granted");
+    }
 
 
 
+    @Override public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+        if (mBothPermissionRequest != null) {
+
+            mBothPermissionRequest.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
 
     public class GetMethodDemo extends AsyncTask<String , Void ,String> {
