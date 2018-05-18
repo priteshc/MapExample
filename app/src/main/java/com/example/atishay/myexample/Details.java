@@ -80,18 +80,23 @@ public class Details extends AppCompatActivity {
                 Toast.makeText(Details.this,String.valueOf(result),Toast.LENGTH_SHORT).show();
 
 
-                mBothPermissionRequest = PermissionUtil.with(Details.this).request(WRITE_EXTERNAL_STORAGE, WRITE_CONTACTS).onResult(new Func2() {
-                    @Override protected void call(int requestCode, String[] permissions, int[] grantResults) {
-                        for (int i = 0; i < permissions.length; i++) {
-                            if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
-                                doOnPermissionGranted(permissions[i]);
-                            } else {
-                                doOnPermissionDenied(permissions[i]);
+
+                if(result!= PackageManager.PERMISSION_GRANTED) {
+
+                    mBothPermissionRequest = PermissionUtil.with(Details.this).request(WRITE_EXTERNAL_STORAGE, WRITE_CONTACTS).onResult(new Func2() {
+                        @Override
+                        protected void call(int requestCode, String[] permissions, int[] grantResults) {
+                            for (int i = 0; i < permissions.length; i++) {
+                                if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                                    doOnPermissionGranted(permissions[i]);
+                                } else {
+                                    doOnPermissionDenied(permissions[i]);
+                                }
                             }
                         }
-                    }
-                }).ask(REQUEST_CODE_BOTH);
+                    }).ask(REQUEST_CODE_BOTH);
 
+                }
 
                 //  Toast.makeText(Details.this,"Click",Toast.LENGTH_SHORT).show();
 
